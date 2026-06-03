@@ -2803,7 +2803,7 @@ const _origRefreshMe = refreshMe;
 window.refreshMe = function() {
   _origRefreshMe();
   const u = me(); if (!u) return;
-  $('my-name-mini').innerHTML = nameWithVipHTML({ name: realName(u), isVip: !!u.isVip, vipTag: (u.vipTag || '').slice(0, 12) });
+  $('my-name-mini').innerHTML = nameWithVipHTML({ id: u.id, name: realName(u), isVip: !!u.isVip, vipTag: (u.vipTag || '').slice(0, 12), isAdmin: !!u.isAdmin });
 };
 
 // Перехват renderChats — обновляем имена в списке чатов с VIP-меткой

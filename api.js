@@ -1041,7 +1041,7 @@
     nameWithVipHTML = function (d) {
       let base = _nameWithVipAdmin(d);
       const real = d && d.id && realUser(d.id);
-      if (real && real.isAdmin) base += ' <span class="spadm-badge">SPADM</span>';
+      if ((d && d.isAdmin) || (real && real.isAdmin)) base += ' <span class="spadm-badge">SPADM</span>';
       return base;
     };
   }
