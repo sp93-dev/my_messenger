@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Django
+backend/db.sqlite3
+backend/db.sqlite3-journal
+backend/staticfiles/
+backend/media/
+*.log
+
+# Окружение
+.env
+backend/.env
+
+# ОС / редакторы
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мой любимый мессенджер</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ========== ЭКРАН АВТОРИЗАЦИИ ========== -->
+<div id="auth-screen" class="screen active">
+  <div class="auth-box">
+    <div class="auth-logo">💬</div>
+    <h1 class="auth-title">Мой любимый мессенджер</h1>
+
+    <div id="login-form" class="auth-form active">
+      <h2>Вход</h2>
+      <input type="text" id="login-username" placeholder="Юзернейм или телефон" autocomplete="off">
+      <input type="password" id="login-password" placeholder="Пароль">
+      <button class="btn-primary" id="btn-login">Войти</button>
+      <p class="auth-switch">Нет аккаунта? <a href="#" id="show-register">Зарегистрироваться</a></p>
+      <p class="auth-error" id="login-error"></p>
+    </div>
+
+    <div id="register-form" class="auth-form">
+      <h2>Регистрация</h2>
+      <input type="text" id="reg-name" placeholder="Имя (например, Лена)" autocomplete="off">
+      <input type="text" id="reg-username" placeholder="Юзернейм (например, hheysi)" autocomplete="off">
+      <div class="field-hint">Только английские буквы, цифры, _ и .</div>
+      <input type="tel" id="reg-phone" placeholder="Телефон (обязательно)" autocomplete="off">
+      <div class="field-hint">Обязательно. По нему выполняется вход и поиск. Минимум 7 цифр.</div>
+      <input type="password" id="reg-password" placeholder="Пароль (мин. 8 символов, не только цифры)">
+      <input type="password" id="reg-password2" placeholder="Повторите пароль">
+      <button class="btn-primary" id="btn-register">Создать аккаунт</button>
+      <p class="auth-switch">Уже есть аккаунт? <a href="#" id="show-login">Войти</a></p>
+      <p class="auth-error" id="register-error"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ОСНОВНОЙ ЭКРАН ========== -->
+<div id="main-screen" class="screen">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="user-mini" id="user-mini">
+        <div class="avatar-wrap">
+          <div class="avatar" id="my-avatar-mini"></div>
+        </div>
+        <div class="user-mini-info">
+          <div class="user-mini-name" id="my-name-mini">—</div>
+          <div class="user-mini-status" id="my-handle-mini">@—</div>
+        </div>
+      </div>
+      <div class="sidebar-actions">
+        <button class="icon-btn" id="btn-new-chat" title="Новый чат" data-label="Чат">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h7"/><line x1="18" y1="3" x2="22" y2="7"/><line x1="20" y1="9" x2="22" y2="7"/><line x1="16" y1="5" x2="20" y2="9"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-new-group" title="Новая группа" data-label="Группа">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-channels" title="Каналы" data-label="Каналы">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-search-global" title="Поиск по всем чатам" data-label="Поиск">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-starred" title="Избранное" data-label="Избранное">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-archive" title="Архив" data-label="Архив">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-call-username" title="Позвонить по юзернейму" data-label="Звонок">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-moderation" title="Модерация" data-label="Модерация" style="display:none;position:relative">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span class="mod-badge" id="mod-badge" style="display:none"></span>
+        </button>
+        <button class="icon-btn" id="btn-profile" title="Профиль и настройки" data-label="Профиль">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-logout" title="Выйти" data-label="Выход">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="stories-bar" id="stories-bar"></div>
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="Поиск чатов...">
+    </div>
+    <div class="folder-tabs" id="folder-tabs"></div>
+    <div class="chat-list" id="chat-list"></div>
+  </aside>
+
+  <main class="chat-area">
+    <div class="chat-empty" id="chat-empty">
+      <div class="chat-empty-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <h3>Добро пожаловать!</h3>
+      <p>Выберите чат слева или создайте новый — личный диалог, группу или канал.</p>
+    </div>
+
+    <div class="chat-view" id="chat-view" style="display:none">
+      <div class="pinned-bar" id="pinned-bar" style="display:none">
+        <span class="pinned-icon">📌</span>
+        <span class="pinned-text" id="pinned-text"></span>
+        <button class="icon-btn" id="pinned-unpin" title="Открепить"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="chat-header" id="chat-header">
+        <button class="icon-btn back-btn" id="btn-back" title="Назад">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="avatar-wrap">
+          <div class="avatar" id="chat-avatar"></div>
+          <div class="online-dot" id="chat-online-dot"></div>
+        </div>
+        <div class="chat-header-info">
+          <div class="chat-header-name" id="chat-header-name"></div>
+          <div class="chat-header-sub" id="chat-header-sub"></div>
+        </div>
+        <button class="icon-btn" id="btn-edit-contact" title="Изменить контакт" style="display:none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </button>
+        <button class="btn-secondary" id="btn-subscribe" style="display:none">Подписаться</button>
+        <button class="icon-btn" id="btn-call-voice" title="Голосовой вызов" style="display:none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-call-video" title="Видеозвонок" style="display:none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-chat-search" title="Поиск в чате">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-chat-info" title="Информация" style="display:none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </button>
+      </div>
+      <div class="chat-search-bar" id="chat-search-bar">
+        <input type="text" id="chat-search-input" placeholder="Поиск в этом чате...">
+        <span class="chat-search-count" id="chat-search-count"></span>
+        <button class="icon-btn" id="chat-search-prev" title="Предыдущее"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></button>
+        <button class="icon-btn" id="chat-search-next" title="Следующее"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <button class="icon-btn" id="chat-search-close" title="Закрыть"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="messages" id="messages"></div>
+      <button class="scroll-to-bottom" id="scroll-down-btn" title="К новым сообщениям">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <span class="scroll-badge" id="scroll-badge"></span>
+      </button>
+      <div class="drop-overlay" id="drop-overlay">
+        <div class="drop-card">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <div>Отпустите файл — отправлю в чат</div>
+        </div>
+      </div>
+      <div class="composer">
+        <div class="composer-hint" id="composer-hint">
+          <span id="composer-hint-text"></span>
+          <button id="composer-hint-cancel"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="reply-preview" id="reply-preview" style="display:none">
+          <div class="reply-bar"></div>
+          <div class="reply-info">
+            <div class="reply-author" id="reply-author"></div>
+            <div class="reply-snippet" id="reply-snippet"></div>
+          </div>
+          <button class="icon-btn" id="reply-cancel"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
+        <div class="recording-bar" id="recording-bar">
+          <span class="recording-dot"></span>
+          <span class="recording-type" id="recording-type"></span>
+          <span class="recording-timer" id="recording-timer">0:00</span>
+          <button class="btn-link" id="btn-cancel-record">Отмена</button>
+          <button class="btn-send" id="btn-stop-record" title="Отправить">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+        <button class="icon-btn" id="btn-emoji" title="Эмодзи и стикеры">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-attach" title="Прикрепить фото/видео">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-voice" title="Голосовое сообщение">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-plus-menu" title="Ещё">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-video-msg" title="Видеосообщение" style="display:none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-poll" title="Опрос" style="display:none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-self-destruct" title="Одноразовое сообщение" style="display:none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-schedule" title="Отправить позже" style="display:none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </button>
+        <input type="file" id="file-input" style="display:none">
+        <input type="file" id="album-input" accept="image/*" multiple style="display:none">
+        <input type="text" id="message-input" placeholder="Сообщение..." autocomplete="off">
+        <div class="mention-box" id="mention-box"></div>
+        <button class="btn-send" id="btn-send" title="Отправить">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+        <!-- Плюс-меню для редко используемых кнопок -->
+        <div class="plus-menu" id="plus-menu">
+          <button data-act="videomsg">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            Видеосообщение
+          </button>
+          <button data-act="poll">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            Создать опрос
+          </button>
+          <button data-act="schedule">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Отправить позже
+          </button>
+          <button data-act="self-destruct" id="plus-self-destruct">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            Одноразовое сообщение
+          </button>
+          <button data-act="location">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Поделиться местоположением
+          </button>
+          <button data-act="album">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Альбом (неск. фото)
+          </button>
+          <button data-act="game-ttt">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+            Крестики-нолики
+          </button>
+          <button data-act="game-wordle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Wordle (5 букв)
+          </button>
+          <button data-act="celebrate">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Конфетти 🎉
+          </button>
+          <button data-act="help">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Шорткаты клавиатуры
+          </button>
+        </div>
+        <div class="emoji-picker" id="emoji-picker">
+          <div class="emoji-tabs">
+            <button class="emoji-tab active" data-tab="emojis">😀 Эмодзи</button>
+            <button class="emoji-tab" data-tab="stickers">🎨 Стикеры</button>
+          </div>
+          <div class="emoji-grid" id="emoji-grid"></div>
+          <div class="sticker-grid" id="sticker-grid" style="display:none"></div>
+        </div>
+        <div class="schedule-popup" id="schedule-popup">
+          <label>Когда отправить:</label>
+          <input type="datetime-local" id="schedule-datetime">
+          <button class="btn-primary" id="btn-schedule-confirm">Запланировать</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ========== МОДАЛКА: ПРОФИЛЬ И НАСТРОЙКИ ========== -->
+<div class="modal" id="profile-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Личный кабинет</h3>
+      <button class="icon-btn modal-close" data-close="profile-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="vip-banner" id="vip-banner">
+        <div class="vip-banner-icon">👑</div>
+        <div class="vip-banner-text">
+          <div class="vip-banner-title" id="vip-banner-title">VIP-подписка</div>
+          <div class="vip-banner-sub" id="vip-banner-sub">Эксклюзивные фичи скоро</div>
+        </div>
+        <div class="vip-banner-shine"></div>
+      </div>
+
+      <div class="profile-avatar-wrap">
+        <div class="avatar avatar-large" id="profile-avatar"></div>
+        <label class="btn-secondary">
+          Загрузить аватар
+          <input type="file" id="profile-avatar-input" accept="image/*" style="display:none">
+        </label>
+        <br>
+        <button class="btn-link" id="btn-remove-avatar">Удалить аватар</button>
+      </div>
+
+      <label class="field-label">Дизайн</label>
+      <div class="theme-grid" id="theme-grid"></div>
+
+      <label class="field-label">Имя</label>
+      <input type="text" id="profile-name">
+      <label class="field-label">Юзернейм (@логин)</label>
+      <input type="text" id="profile-username">
+      <div class="field-hint">Только английские буквы, цифры, _ и .</div>
+      <label class="field-label">Настроение (эмодзи рядом с именем)</label>
+      <div class="mood-picker" id="mood-picker">
+        <span data-mood="">—</span>
+        <span data-mood="😊">😊</span>
+        <span data-mood="😎">😎</span>
+        <span data-mood="🥳">🥳</span>
+        <span data-mood="😴">😴</span>
+        <span data-mood="🤒">🤒</span>
+        <span data-mood="❤️">❤️</span>
+        <span data-mood="🔥">🔥</span>
+        <span data-mood="🎮">🎮</span>
+        <span data-mood="✈️">✈️</span>
+        <span data-mood="💼">💼</span>
+        <span data-mood="🎧">🎧</span>
+      </div>
+      <label class="field-label">Новый пароль (оставьте пустым, чтобы не менять)</label>
+      <input type="password" id="profile-password" placeholder="Новый пароль">
+      <button class="btn-primary" id="btn-save-profile">Сохранить</button>
+      <p class="auth-error" id="profile-error"></p>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn-secondary" id="btn-show-qr" style="flex:1;justify-content:center">📱 Мой QR-код</button>
+        <button class="btn-secondary" id="btn-manage-folders" style="flex:1;justify-content:center">🗂 Папки чатов</button>
+      </div>
+
+      <div id="profile-vip-tag-row" style="display:none">
+        <label class="field-label">👑 Ваша VIP-приписка (до 12 символов)</label>
+        <input type="text" id="profile-vip-tag" maxlength="12" placeholder="Например: Босс, Founder, ⭐CEO">
+        <div class="field-hint">Видна рядом с вашим именем у всех пользователей</div>
+      </div>
+
+      <label class="field-label">Телефон (для поиска вас другими)</label>
+      <input type="tel" id="profile-phone" placeholder="Например: +7 900 123-45-67">
+      <label class="field-label">О себе (био)</label>
+      <input type="text" id="profile-bio" placeholder="Например: дизайнер из Москвы">
+      <label class="field-label">Статус</label>
+      <input type="text" id="profile-status" placeholder="Например: на работе / в отпуске">
+
+      <label class="field-label" style="margin-top:14px">Приватность и безопасность</label>
+      <div class="toggle-row">
+        <span>Скрыть «был(а) в сети»</span>
+        <input type="checkbox" id="toggle-hide-last-seen">
+      </div>
+      <div class="toggle-row">
+        <span>Уведомления в браузере</span>
+        <input type="checkbox" id="toggle-notifications">
+      </div>
+      <div class="toggle-row">
+        <span>Звук новых сообщений</span>
+        <input type="checkbox" id="toggle-sound">
+      </div>
+      <button class="btn-secondary" id="btn-set-pin" style="margin-top:8px">🔒 PIN-код входа</button>
+      <button class="btn-secondary" id="btn-manage-blocked" style="margin-top:8px">🚫 Чёрный список</button>
+
+      <label class="field-label" style="margin-top:14px">⚙️ Настройки приложения</label>
+      <div class="toggle-row">
+        <span>Подсказки и советы</span>
+        <input type="checkbox" id="toggle-hints" checked>
+      </div>
+      <div class="toggle-row">
+        <span>Подписи под кнопками</span>
+        <input type="checkbox" id="toggle-labels">
+      </div>
+      <div class="toggle-row">
+        <span>Анимации интерфейса</span>
+        <input type="checkbox" id="toggle-animations" checked>
+      </div>
+      <div class="toggle-row">
+        <span>Компактный режим</span>
+        <input type="checkbox" id="toggle-compact">
+      </div>
+      <div class="toggle-row">
+        <span>Enter отправляет сообщение</span>
+        <input type="checkbox" id="toggle-enter-send" checked>
+      </div>
+      <div class="toggle-row">
+        <span>Крупный текст</span>
+        <input type="checkbox" id="toggle-large-text">
+      </div>
+      <button class="btn-secondary" id="btn-replay-tour" style="margin-top:4px">🎓 Показать обучение заново</button>
+
+      <label class="field-label" style="margin-top:14px">Мои стикеры</label>
+      <div class="sticker-library" id="sticker-library"></div>
+      <label class="btn-secondary">
+        Добавить стикер
+        <input type="file" id="add-sticker-input" accept="image/*" multiple style="display:none">
+      </label>
+      <p style="font-size:11px;color:var(--text-muted);margin-top:6px">
+        До 500 КБ на стикер.
+      </p>
+
+      <label class="field-label" style="margin-top:18px">Резервная копия</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-secondary" id="btn-export-data">⬇ Экспорт всех данных</button>
+        <label class="btn-secondary">
+          ⬆ Импорт
+          <input type="file" id="import-data-input" accept=".json,application/json" style="display:none">
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: ПЕРЕСЫЛКА ========== -->
+<div class="modal" id="forward-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Переслать в…</h3>
+      <button class="icon-btn modal-close" data-close="forward-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <input type="text" id="forward-search" placeholder="Поиск чата...">
+      <div class="user-list" id="forward-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: НОВЫЙ ОПРОС ========== -->
+<div class="modal" id="poll-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>📊 Новый опрос</h3>
+      <button class="icon-btn modal-close" data-close="poll-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <label class="field-label">Вопрос</label>
+      <input type="text" id="poll-question" placeholder="Что-нибудь интересное?">
+      <label class="field-label">Варианты</label>
+      <div id="poll-options">
+        <input type="text" class="poll-option-input" placeholder="Вариант 1">
+        <input type="text" class="poll-option-input" placeholder="Вариант 2">
+      </div>
+      <button class="btn-link" id="btn-add-poll-option">+ Добавить вариант</button>
+      <div class="toggle-row" style="margin-top:10px">
+        <span>Можно выбрать несколько ответов</span>
+        <input type="checkbox" id="poll-multi">
+      </div>
+      <button class="btn-primary" id="btn-create-poll">Отправить опрос</button>
+      <p class="auth-error" id="poll-error"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: ГЛОБАЛЬНЫЙ ПОИСК ========== -->
+<div class="modal" id="search-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🔍 Поиск по сообщениям</h3>
+      <button class="icon-btn modal-close" data-close="search-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <input type="text" id="global-search-input" placeholder="Введите текст или #тег">
+      <div class="search-results" id="search-results"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: ИЗБРАННОЕ ========== -->
+<div class="modal" id="starred-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>⭐ Избранное</h3>
+      <button class="icon-btn modal-close" data-close="starred-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="search-results" id="starred-results"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: АРХИВ ========== -->
+<div class="modal" id="archive-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>📁 Архив чатов</h3>
+      <button class="icon-btn modal-close" data-close="archive-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="user-list" id="archive-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: ЧЁРНЫЙ СПИСОК ========== -->
+<div class="modal" id="blocked-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🚫 Чёрный список</h3>
+      <button class="icon-btn modal-close" data-close="blocked-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">
+        Заблокированные не видны вам в каталоге и не могут писать.
+      </p>
+      <div class="user-list" id="blocked-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: PIN ========== -->
+<div class="modal" id="pin-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🔒 PIN-код</h3>
+      <button class="icon-btn modal-close" data-close="pin-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">
+        4–8 цифр. При следующем входе нужно будет ввести.
+      </p>
+      <label class="field-label">Новый PIN (пусто = убрать)</label>
+      <input type="password" id="new-pin" inputmode="numeric" maxlength="8" placeholder="••••">
+      <button class="btn-primary" id="btn-save-pin">Сохранить</button>
+      <p class="auth-error" id="pin-error"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА ШОРТКАТОВ ========== -->
+<div class="modal" id="shortcuts-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>⌨️ Шорткаты клавиатуры</h3>
+      <button class="icon-btn modal-close" data-close="shortcuts-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="shortcut-row"><kbd>Ctrl</kbd>+<kbd>K</kbd><span>Глобальный поиск</span></div>
+      <div class="shortcut-row"><kbd>Ctrl</kbd>+<kbd>N</kbd><span>Новый чат</span></div>
+      <div class="shortcut-row"><kbd>Ctrl</kbd>+<kbd>E</kbd><span>Эмодзи и стикеры</span></div>
+      <div class="shortcut-row"><kbd>Ctrl</kbd>+<kbd>/</kbd><span>Эта подсказка</span></div>
+      <div class="shortcut-row"><kbd>Esc</kbd><span>Закрыть модалку / чат</span></div>
+      <div class="shortcut-row"><kbd>↑</kbd><span>Редактировать последнее сообщение</span></div>
+      <div class="shortcut-row"><kbd>Enter</kbd><span>Отправить</span></div>
+      <h4 style="font-size:13px;color:var(--text-secondary);margin:14px 0 8px;text-transform:uppercase;letter-spacing:0.06em">Команды в сообщениях</h4>
+      <div class="shortcut-row"><kbd>/me</kbd><span>Сообщение от третьего лица</span></div>
+      <div class="shortcut-row"><kbd>/shrug</kbd><span>¯\_(ツ)_/¯</span></div>
+      <div class="shortcut-row"><kbd>/tableflip</kbd><span>(╯°□°)╯︵ ┻━┻</span></div>
+      <div class="shortcut-row"><kbd>/celebrate</kbd><span>Запустить конфетти 🎉</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА ЗВОНКА ========== -->
+<div id="call-overlay">
+  <div class="call-box">
+    <div class="call-state" id="call-state">Звонок…</div>
+    <div class="avatar avatar-large" id="call-avatar"></div>
+    <div class="call-name" id="call-name"></div>
+    <div class="call-meta" id="call-meta"></div>
+    <video id="call-remote-video" playsinline autoplay style="display:none"></video>
+    <video id="call-local-video" playsinline autoplay muted style="display:none"></video>
+    <div class="call-actions">
+      <button class="call-btn answer" id="call-answer" title="Принять">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </button>
+      <button class="call-btn mute" id="call-mute" title="Mute">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+      </button>
+      <button class="call-btn end" id="call-end" title="Завершить">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.33-2.67m-2.67-3.34a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"/><line x1="23" y1="1" x2="1" y2="23"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== КОНТЕЙНЕР КОНФЕТТИ ========== -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- ========== ТОСТЫ ========== -->
+<div id="toast-container"></div>
+
+<!-- ========== ОНБОРДИНГ-ТУР ========== -->
+<div id="onboarding" style="display:none">
+  <div class="onboarding-backdrop"></div>
+  <div class="onboarding-spotlight" id="onboarding-spotlight"></div>
+  <div class="onboarding-card" id="onboarding-card">
+    <div class="onboarding-emoji" id="onboarding-emoji">👋</div>
+    <h3 id="onboarding-title"></h3>
+    <p id="onboarding-text"></p>
+    <div class="onboarding-footer">
+      <div class="onboarding-dots" id="onboarding-dots"></div>
+      <div class="onboarding-buttons">
+        <button class="btn-link" id="onboarding-skip" style="color:var(--text-secondary)">Пропустить</button>
+        <button class="btn-primary" id="onboarding-next" style="width:auto;padding:8px 20px;margin:0">Далее</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: ЗВОНОК ПО ЮЗЕРНЕЙМУ ========== -->
+<div class="modal" id="call-user-modal">
+  <div class="modal-content" style="max-width:380px">
+    <div class="modal-header">
+      <h3>📞 Позвонить</h3>
+      <button class="icon-btn modal-close" data-close="call-user-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:10px">Введите юзернейм собеседника. Звонок настоящий — между разными устройствами по интернету. Оба должны быть онлайн в приложении.</p>
+      <label class="field-label">Юзернейм</label>
+      <input type="text" id="call-username-input" placeholder="например: maria" autocomplete="off">
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn-primary" id="call-do-voice" style="flex:1;justify-content:center">🎙 Голос</button>
+        <button class="btn-primary" id="call-do-video" style="flex:1;justify-content:center">📹 Видео</button>
+      </div>
+      <div class="call-self-id" id="call-self-id"></div>
+      <p class="auth-error" id="call-user-error"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА VIP ========== -->
+<div class="modal" id="vip-modal">
+  <div class="modal-content vip-modal-content">
+    <div class="modal-header">
+      <h3>👑 VIP</h3>
+      <button class="icon-btn modal-close" data-close="vip-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="vip-hero">
+        <div class="vip-crown-big">👑</div>
+        <h2>Станьте VIP</h2>
+        <p>Будущая экосистема для самых ценных пользователей</p>
+      </div>
+      <div class="vip-features">
+        <div class="vip-feature"><span>✨</span><div><strong>Эксклюзивные стикеры</strong><br><small>Анимированные паки только для VIP</small></div></div>
+        <div class="vip-feature"><span>🎨</span><div><strong>Премиум-темы</strong><br><small>Уникальные дизайны и обои</small></div></div>
+        <div class="vip-feature"><span>🚀</span><div><strong>Безлимит</strong><br><small>Большие файлы, длинные голосовые</small></div></div>
+        <div class="vip-feature"><span>📞</span><div><strong>HD-звонки</strong><br><small>Лучшее качество видео и звука</small></div></div>
+        <div class="vip-feature"><span>⭐</span><div><strong>Бейдж VIP</strong><br><small>Видимая корона у имени</small></div></div>
+        <div class="vip-feature"><span>💎</span><div><strong>Приоритет</strong><br><small>Быстрая поддержка и новые фичи первым</small></div></div>
+      </div>
+      <button class="btn-primary vip-cta" id="btn-become-vip">Стать VIP — скоро</button>
+      <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:12px">
+        Сейчас VIP — это заготовка. Экосистема в разработке.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: УПРАВЛЕНИЕ ПАПКАМИ ========== -->
+<div class="modal" id="folders-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🗂 Папки чатов</h3>
+      <button class="icon-btn modal-close" data-close="folders-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">Создавайте свои папки и распределяйте чаты как удобно.</p>
+      <div class="folders-list" id="folders-list"></div>
+      <label class="field-label" style="margin-top:14px">Новая папка</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="text" id="new-folder-icon" maxlength="2" placeholder="📁" style="width:54px;text-align:center;flex-shrink:0">
+        <input type="text" id="new-folder-name" maxlength="20" placeholder="Название папки" style="flex:1;margin-bottom:0">
+        <button class="btn-primary" id="btn-add-folder" style="width:auto;padding:11px 18px;margin:0">Создать</button>
+      </div>
+      <p class="auth-error" id="folder-error"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: ВЫБОР ПАПКИ ДЛЯ ЧАТА ========== -->
+<div class="modal" id="assign-folder-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🗂 Добавить в папку</h3>
+      <button class="icon-btn modal-close" data-close="assign-folder-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="assign-folder-list" id="assign-folder-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: ИНФО ГРУППЫ ========== -->
+<div class="modal" id="group-info-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="group-info-title">Информация</h3>
+      <button class="icon-btn modal-close" data-close="group-info-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="profile-avatar-wrap">
+        <div class="avatar avatar-large" id="group-info-avatar"></div>
+        <div style="font-size:18px;font-weight:600" id="group-info-name"></div>
+        <div style="font-size:13px;color:var(--text-secondary)" id="group-info-count"></div>
+      </div>
+      <label class="field-label">Участники</label>
+      <div class="user-list" id="group-members-list"></div>
+      <button class="btn-secondary" id="btn-add-members" style="display:none">➕ Добавить участников</button>
+      <div id="add-members-block" style="display:none;margin-top:10px">
+        <div class="user-list" id="add-members-list"></div>
+        <button class="btn-primary" id="btn-confirm-add-members">Добавить выбранных</button>
+      </div>
+      <button class="btn-link" id="btn-leave-group" style="margin-top:10px">Покинуть группу</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: QR-КОД ПРОФИЛЯ ========== -->
+<div class="modal" id="qr-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>📱 Мой QR-код</h3>
+      <button class="icon-btn modal-close" data-close="qr-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" style="text-align:center">
+      <div class="qr-wrap" id="qr-wrap"></div>
+      <div style="font-size:16px;font-weight:600;margin-top:12px" id="qr-name"></div>
+      <div style="font-size:13px;color:var(--text-secondary)" id="qr-handle"></div>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:10px">Покажите этот код — друг отсканирует и найдёт вас по юзернейму.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: WORDLE ========== -->
+<div class="modal" id="wordle-modal">
+  <div class="modal-content" style="max-width:380px">
+    <div class="modal-header">
+      <h3>🟩 Wordle</h3>
+      <button class="icon-btn modal-close" data-close="wordle-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;text-align:center">Угадайте слово из 5 букв за 6 попыток</p>
+      <div class="wordle-board" id="wordle-board"></div>
+      <div class="wordle-msg" id="wordle-msg"></div>
+      <input type="text" id="wordle-input" maxlength="5" placeholder="Ваше слово" autocomplete="off" style="text-align:center;text-transform:uppercase;letter-spacing:6px;margin-top:14px">
+      <button class="btn-primary" id="wordle-guess">Проверить</button>
+      <button class="btn-link" id="wordle-new" style="display:block;margin:8px auto 0">Новая игра</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: МОДЕРАЦИЯ (для админа) ========== -->
+<div class="modal" id="moderation-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🛡 Модерация — жалобы</h3>
+      <button class="icon-btn modal-close" data-close="moderation-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px">Сообщения с запрещёнными словами. Пользователи НЕ блокируются автоматически — решение за вами.</p>
+      <div class="reports-list" id="reports-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PIN-LOCK ОВЕРЛЕЙ ========== -->
+<div id="pin-lock" style="display:none">
+  <div class="pin-lock-box">
+    <div class="pin-lock-icon">🔒</div>
+    <h2>Приложение заблокировано</h2>
+    <p>Введите PIN-код</p>
+    <input type="password" id="pin-lock-input" inputmode="numeric" maxlength="8" placeholder="••••">
+    <p class="auth-error" id="pin-lock-error"></p>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: НОВЫЙ ЧАТ ========== -->
+<div class="modal" id="new-chat-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Новый чат</h3>
+      <button class="icon-btn modal-close" data-close="new-chat-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <input type="text" id="new-chat-search" placeholder="Юзернейм или номер телефона">
+      <div class="field-hint">Начните вводить юзернейм (покажем всех, у кого он есть в логине) или номер телефона</div>
+      <div class="user-list" id="new-chat-users"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: НОВАЯ ГРУППА ========== -->
+<div class="modal" id="new-group-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Новая группа</h3>
+      <button class="icon-btn modal-close" data-close="new-group-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <label class="field-label">Название группы</label>
+      <input type="text" id="group-name" placeholder="Например: Друзья">
+      <label class="field-label">Участники</label>
+      <div class="user-list" id="new-group-users"></div>
+      <button class="btn-primary" id="btn-create-group">Создать группу</button>
+      <p class="auth-error" id="group-error"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: РЕДАКТИРОВАНИЕ КОНТАКТА ========== -->
+<div class="modal" id="contact-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Изменить контакт</h3>
+      <button class="icon-btn modal-close" data-close="contact-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:14px">
+        Изменения видны только вам. Настоящий юзернейм собеседника не меняется.
+      </p>
+      <div class="profile-avatar-wrap">
+        <div class="avatar avatar-large" id="contact-avatar"></div>
+        <label class="btn-secondary">
+          Загрузить кастомный аватар
+          <input type="file" id="contact-avatar-input" accept="image/*" style="display:none">
+        </label>
+        <br>
+        <button class="btn-link" id="btn-reset-contact-avatar">Вернуть оригинальный</button>
+      </div>
+      <label class="field-label">Как называть этого человека</label>
+      <input type="text" id="contact-name" placeholder="Настоящий юзернейм">
+      <button class="btn-primary" id="btn-save-contact">Сохранить</button>
+      <button class="btn-link" id="btn-reset-contact-all">Сбросить все изменения</button>
+      <p class="auth-error" id="contact-error"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: КАНАЛЫ ========== -->
+<div class="modal" id="channels-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>📢 Каналы</h3>
+      <button class="icon-btn modal-close" data-close="channels-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <button class="btn-primary" id="btn-open-create-channel">+ Создать свой канал</button>
+      <label class="field-label" style="margin-top:18px">Все каналы</label>
+      <input type="text" id="channels-search" placeholder="Поиск каналов...">
+      <div class="user-list" id="channels-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: СОЗДАТЬ КАНАЛ ========== -->
+<div class="modal" id="create-channel-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Создать канал</h3>
+      <button class="icon-btn modal-close" data-close="create-channel-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="profile-avatar-wrap">
+        <div class="avatar avatar-large" id="new-channel-avatar">📢</div>
+        <label class="btn-secondary">
+          Аватар канала
+          <input type="file" id="new-channel-avatar-input" accept="image/*" style="display:none">
+        </label>
+      </div>
+      <label class="field-label">Название канала</label>
+      <input type="text" id="new-channel-name" placeholder="Например: Моя жизнь">
+      <label class="field-label">Описание</label>
+      <input type="text" id="new-channel-desc" placeholder="О чём канал (опционально)">
+      <button class="btn-primary" id="btn-do-create-channel">Создать</button>
+      <p class="auth-error" id="create-channel-error"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== МОДАЛКА: КОММЕНТАРИИ ========== -->
+<div class="modal" id="comments-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>💬 Комментарии</h3>
+      <button class="icon-btn modal-close" data-close="comments-modal"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body" style="padding:0;display:flex;flex-direction:column">
+      <div class="post-preview" id="post-preview"></div>
+      <div class="comments-list" id="comments-list"></div>
+      <div class="comments-composer">
+        <input type="text" id="comment-input" placeholder="Комментировать...">
+        <button class="btn-send" id="btn-send-comment">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== КОНТЕКСТНОЕ МЕНЮ ДЛЯ СООБЩЕНИЙ ========== -->
+<div class="context-menu" id="msg-menu">
+  <div class="reaction-row" id="reaction-row">
+    <span data-emoji="👍">👍</span>
+    <span data-emoji="❤️">❤️</span>
+    <span data-emoji="😂">😂</span>
+    <span data-emoji="😮">😮</span>
+    <span data-emoji="😢">😢</span>
+    <span data-emoji="🔥">🔥</span>
+    <span id="reaction-more" title="Другая реакция">+</span>
+  </div>
+  <button id="ctx-reply">↩ Ответить</button>
+  <button id="ctx-edit">✎ Редактировать</button>
+  <button id="ctx-pin">📌 Закрепить</button>
+  <button id="ctx-forward">➤ Переслать</button>
+  <button id="ctx-star">⭐ В избранное</button>
+  <button id="ctx-copy">📋 Скопировать текст</button>
+  <button id="ctx-delete" class="danger">🗑 Удалить</button>
+</div>
+
+<!-- ========== КОНТЕКСТНОЕ МЕНЮ ЧАТА ========== -->
+<div class="context-menu" id="chat-ctx">
+  <button id="chat-ctx-pin">📌 <span></span></button>
+  <button id="chat-ctx-mute">🔕 <span></span></button>
+  <button id="chat-ctx-folder">🗂 В папку…</button>
+  <button id="chat-ctx-disappear">⏳ <span></span></button>
+  <button id="chat-ctx-archive">📁 <span></span></button>
+  <button id="chat-ctx-markread">✓ Отметить прочитанным</button>
+</div>
+
+<!-- ========== ПИКЕР ЭМОДЗИ ДЛЯ РЕАКЦИЙ ========== -->
+<div class="emoji-picker" id="reaction-emoji-picker" style="bottom:auto;">
+  <div class="emoji-grid" id="reaction-emoji-grid"></div>
+</div>
+
+<!-- ========== STORY VIEWER ========== -->
+<div class="story-viewer" id="story-viewer">
+  <div class="story-progress" id="story-progress"></div>
+  <div class="story-header">
+    <div class="avatar" id="story-author-avatar"></div>
+    <div class="story-author-info">
+      <div class="story-author-name" id="story-author-name"></div>
+      <div class="story-author-time" id="story-author-time"></div>
+    </div>
+    <button class="story-delete" id="story-delete" title="Удалить">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+    </button>
+    <button class="story-close" id="story-close">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="story-content" id="story-content"></div>
+  <button class="story-nav prev" id="story-prev">‹</button>
+  <button class="story-nav next" id="story-next">›</button>
+</div>
+<input type="file" id="story-input" accept="image/*,video/*" style="display:none">
+
+<!-- ========== ПРОСМОТР МЕДИА ========== -->
+<div class="media-viewer" id="media-viewer">
+  <button class="media-close" id="media-close"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <div class="media-content" id="media-content"></div>
+</div>
+
+<script>
+  // Загружаем PeerJS асинхронно, чтобы приложение работало даже если CDN недоступен
+  (function loadPeerJS() {
+    var sources = [
+      'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js',
+      'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'
+    ];
+    var i = 0;
+    function tryNext() {
+      if (i >= sources.length) { window.__peerFailed = true; return; }
+      var s = document.createElement('script');
+      s.src = sources[i++];
+      s.async = true;
+      s.onload = function() { window.__peerLoaded = true; if (window.onPeerReady) window.onPeerReady(); };
+      s.onerror = tryNext;
+      document.head.appendChild(s);
+    }
+    tryNext();
+  })();
+</script>
+<script src="app.js?v=14"></script>
+<script src="api.js?v=14"></script>
+</body>
+</html>

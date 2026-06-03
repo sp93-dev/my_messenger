@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "PowerShell(python --version 2>&1)",
+      "PowerShell(python3 --version 2>&1)",
+      "PowerShell(py --version 2>&1)",
+      "mcp__Claude_Preview__preview_start",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\11\\\\Desktop\\\\мой любимый мессенджер\\\\backend\"; $env:PYTHONIOENCODING='utf-8'; python test_api.py 2>&1)",
+      "Bash(python -c ' *)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\11\\\\Desktop\\\\мой любимый мессенджер\\\\backend\"; Start-Process -FilePath \"python\" -ArgumentList \"manage.py\",\"runserver\",\"127.0.0.1:8000\",\"--noreload\" -WindowStyle Hidden; Start-Sleep -Seconds 5; try { $r = Invoke-WebRequest -Uri \"http://127.0.0.1:8000/api/login\" -Method POST -Body '{}' -ContentType 'application/json' -UseBasicParsing -TimeoutSec 5; $r.StatusCode } catch { \"HTTP: \" + $_.Exception.Response.StatusCode.value__ })",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\11\\\\Desktop\\\\мой любимый мессенджер\\\\backend\"; $env:PYTHONIOENCODING='utf-8'; python manage.py check 2>&1; if \\(-not \\(Get-Process python -ErrorAction SilentlyContinue\\)\\) { Start-Process -FilePath \"python\" -ArgumentList \"manage.py\",\"runserver\",\"127.0.0.1:8000\",\"--noreload\" -WindowStyle Hidden; Start-Sleep 5; \"сервер запущен\" } else { \"сервер уже работает\" })"
+    ]
+  }
+}
