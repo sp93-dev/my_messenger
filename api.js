@@ -558,6 +558,12 @@
     try {
       const sm = await API.sendMessage(currentChatId, { type: outType, content: outContent, extra });
       applyServerMessage(sm);
+      // своё сообщение в секретном чате показываем сразу открытым текстом (он у нас есть),
+      // чтобы не мелькал плейсхолдер «🔒 …»
+      if (extra.enc && content) {
+        const mine = messages.find(x => x.id === sm.id);
+        if (mine) { mine.content = content; mine._needDecrypt = false; }
+      }
       save(DB.messages, messages);
       decryptPending(); decryptMediaPending();
       renderMessages(); renderChats();
