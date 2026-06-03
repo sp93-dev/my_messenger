@@ -5,10 +5,13 @@
    ===================================================================== */
 (function () {
   // Адрес API определяется автоматически:
-  // - file:// или локальный превью-сервер (:8765) → локальный backend на :8000
-  // - в остальных случаях (продакшен, где Django раздаёт и сайт) → тот же домен
-  const DEV = location.protocol === 'file:' || /:8765$/.test(location.host) || location.host === '';
-  const API_BASE = DEV ? 'http://127.0.0.1:8000/api' : (location.origin + '/api');
+  // - если сайт открыт прямо с Django (порт 8000) или с настоящего домена → тот же origin
+  // - если открыт локально иначе (file://, Live Server, превью на другом порту) → backend :8000
+  const _host = location.hostname;
+  const _isLocal = location.protocol === 'file:' || _host === '' ||
+                   _host === 'localhost' || _host === '127.0.0.1';
+  const _onDjango = location.port === '8000';
+  const API_BASE = (_isLocal && !_onDjango) ? 'http://127.0.0.1:8000/api' : (location.origin + '/api');
   const TOKEN_KEY = 'msg_token';
   let token = localStorage.getItem(TOKEN_KEY) || null;
   let lastSync = 0;
