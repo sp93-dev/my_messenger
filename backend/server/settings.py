@@ -82,8 +82,13 @@ ASGI_APPLICATION = 'server.asgi.application'
 # По умолчанию SQLite. Для PostgreSQL задайте DATABASE_URL=postgres://user:pass@host:port/db
 DATABASE_URL = os.environ.get('DATABASE_URL', '')
 if DATABASE_URL.startswith('postgres'):
-    from urllib.parse import urlparse
+    from urllib.parse import urlparse, parse_qs
     u = urlparse(DATABASE_URL)
+    # пробрасываем sslmode из строки подключения (нужно для ВНЕШНЕГО подключения к Render)
+    options = {}
+    qs = parse_qs(u.query)
+    if 'sslmode' in qs:
+        options['sslmode'] = qs['sslmode'][0]
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -92,6 +97,7 @@ if DATABASE_URL.startswith('postgres'):
             'PASSWORD': u.password,
             'HOST': u.hostname,
             'PORT': u.port or 5432,
+            **({'OPTIONS': options} if options else {}),
         }
     }
 else:
