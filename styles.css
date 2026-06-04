@@ -1319,6 +1319,49 @@ a:hover { color: var(--accent-hover); }
   .msg { max-width: 92%; }
 }
 
+/* ============ ПОЛНЫЙ МОБИЛЬНЫЙ ПРОХОД (телефоны) ============ */
+@keyframes sheetIn {
+  from { transform: translateY(100%); opacity: 0.7; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+@media (max-width: 600px) {
+  /* Модальные окна — «шторкой» снизу: во всю ширину, скругление сверху */
+  .modal { align-items: flex-end; }
+  .modal-content {
+    width: 100%; max-width: 100%;
+    max-height: 92dvh;
+    border-radius: 20px 20px 0 0;
+    border-bottom: none;
+    padding-bottom: env(safe-area-inset-bottom);
+    animation: sheetIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  /* «ручка» сверху шторки */
+  .modal-header { position: relative; padding-top: 22px; }
+  .modal-header::before {
+    content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+    width: 40px; height: 4px; border-radius: 2px; background: var(--border-strong);
+  }
+  .modal-body { padding: 16px 18px; }
+
+  /* Поля ввода >=16px — iOS не зумит при фокусе */
+  input[type="text"], input[type="password"], input[type="tel"],
+  input[type="search"], input[type="number"], input[type="datetime-local"],
+  textarea, select { font-size: 16px; }
+
+  /* Экран входа */
+  #auth-screen { padding: 16px; }
+  .auth-box { width: 100%; padding: 28px 22px; border-radius: 18px; }
+
+  /* Сетки — компактнее */
+  .vip-features { grid-template-columns: 1fr !important; }
+  .theme-grid { grid-template-columns: repeat(3, 1fr) !important; }
+
+  /* Полноэкранные оверлеи — учитываем чёлку/полосу */
+  .story-viewer .story-header { top: calc(30px + env(safe-area-inset-top)); }
+  .story-viewer .story-progress { top: calc(12px + env(safe-area-inset-top)); }
+  .call-overlay { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+}
+
 /* ============ ИСТОРИИ ============ */
 .stories-bar {
   display: flex;
