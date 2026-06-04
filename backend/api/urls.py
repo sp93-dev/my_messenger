@@ -15,6 +15,7 @@ urlpatterns = [
     path('chats', views.chats),
     path('chats/<str:chat_id>', views.chat_detail),
     path('chats/<str:chat_id>/messages', views.messages),
+    path('chats/<str:chat_id>/typing', views.typing),
     # сообщения
     path('messages/<str:message_id>', views.message_detail),
     # загрузка файлов

@@ -259,6 +259,24 @@ def presence(request):
     return Response({'ok': True})
 
 
+@api_view(['POST'])
+def typing(request, chat_id):
+    """Сообщает другим участникам чата, что пользователь печатает (через WebSocket)."""
+    user = request.user
+    try:
+        c = Chat.objects.get(id=chat_id, members=user)
+    except Chat.DoesNotExist:
+        return Response({'error': 'Чат не найден'}, status=404)
+    try:
+        name = user.profile.name or user.username
+    except Exception:
+        name = user.username
+    others = [uid for uid in chat_member_ids(c) if uid != user.id]
+    notify_users(others, {'type': 'typing', 'chatId': c.id,
+                          'userId': str(user.id), 'name': name})
+    return Response({'ok': True})
+
+
 # ============ ЧАТЫ ============
 @api_view(['GET', 'POST'])
 def chats(request):

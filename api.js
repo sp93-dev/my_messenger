@@ -82,6 +82,7 @@
     users: () => http('GET', '/users'),
     searchUsers: (q) => http('GET', '/users/search?q=' + encodeURIComponent(q)),
     presence: () => http('POST', '/presence', {}),
+    sendTyping: (chatId) => http('POST', '/chats/' + chatId + '/typing', {}),
     chats: () => http('GET', '/chats'),
     createChat: (d) => http('POST', '/chats', d),
     chatAction: (id, d) => http('PATCH', '/chats/' + id, d),
@@ -434,6 +435,15 @@
       }
     } else if (data.type === 'report') {
       onNewReport(data.report);
+    } else if (data.type === 'typing') {
+      // другой участник печатает — обновляем локальное состояние и UI
+      if (typeof typing !== 'undefined' && String(data.userId) !== String(session)) {
+        typing[data.chatId] = typing[data.chatId] || {};
+        typing[data.chatId][data.userId] = Date.now();
+        try { save(DB.typing, typing); } catch {}
+        if (data.chatId === currentChatId && typeof refreshChatHeaderPresence === 'function') refreshChatHeaderPresence();
+        renderChats();
+      }
     }
   }
   window.__wsConnected = () => wsConnected;
@@ -608,6 +618,20 @@
     API.patchMessage(msgId, { extra: { readBy: m.readBy, readAt: m.readAt } })
       .then(sm => applyServerMessage(sm)).catch(() => {});
   };
+
+  // «печатает…»: к локальной отметке добавляем отправку на сервер (с троттлингом)
+  if (typeof markTyping === 'function') {
+    const _markTyping = markTyping;
+    let _lastTypingSent = 0;
+    markTyping = function () {
+      _markTyping();
+      const now = Date.now();
+      if (currentChatId && now - _lastTypingSent > 2500) {
+        _lastTypingSent = now;
+        API.sendTyping(currentChatId).catch(() => {});
+      }
+    };
+  }
 
   // ---------- УДАЛЕНИЕ (с undo) ----------
   $('ctx-delete').onclick = () => {

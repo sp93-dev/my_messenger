@@ -1197,6 +1197,8 @@ function attachContextMenu(el) {
     $('ctx-edit').style.display = (mine && m.type === 'text') ? '' : 'none';
     $('ctx-delete').style.display = mine ? '' : 'none';
     $('ctx-copy').style.display = m.type === 'text' ? '' : 'none';
+    const _ctxChat = chats.find(c => c.id === currentChatId);
+    if ($('ctx-readers')) $('ctx-readers').style.display = (mine && _ctxChat && _ctxChat.type === 'group') ? '' : 'none';
     const x = ('touches' in e ? e.touches[0].clientX : e.clientX);
     const y = ('touches' in e ? e.touches[0].clientY : e.clientY);
     ctxMenu.style.left = Math.min(x, window.innerWidth - 260) + 'px';
@@ -1287,6 +1289,15 @@ $('ctx-copy').onclick = async () => {
   const m = messages.find(x => x.id === ctxTargetId);
   if (m && m.content) { try { await navigator.clipboard.writeText(m.content); toast('Скопировано', 'success'); } catch { toast('Не удалось скопировать', 'error'); } }
   ctxMenu.classList.remove('open');
+};
+if ($('ctx-readers')) $('ctx-readers').onclick = () => {
+  if (!ctxTargetId) return;
+  const m = messages.find(x => x.id === ctxTargetId);
+  ctxMenu.classList.remove('open');
+  if (!m) return;
+  const readers = (m.readBy || []).filter(uid => uid !== session).map(uid => displayUser(uid).name);
+  if (readers.length) toast('👁 Прочитали: ' + readers.join(', '), 'info', 4000);
+  else toast('Пока никто не прочитал', 'info', 2500);
 };
 document.querySelectorAll('#reaction-row span').forEach(s => {
   s.onclick = () => { if (ctxTargetId) { toggleReaction(ctxTargetId, s.dataset.emoji); ctxMenu.classList.remove('open'); ctxTargetId = null; } };
