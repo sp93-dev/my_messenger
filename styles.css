@@ -435,20 +435,24 @@ a:hover { color: var(--accent-hover); }
   overscroll-behavior: contain;
 }
 .msg {
-  max-width: 70%;
-  padding: 8px 13px;
-  border-radius: 17px;
+  max-width: 72%;
+  padding: 8px 14px;
+  border-radius: 22px;            /* мягче и круглее */
   font-size: 14.5px;
-  line-height: 1.42;
+  line-height: 1.45;
   word-wrap: break-word;
   position: relative;
-  animation: msgIn 0.34s var(--ease-smooth) both;
   transition: box-shadow var(--t-med) var(--ease-soft), border-radius var(--t-med) var(--ease-soft);
+}
+/* Анимация появления — только для НОВЫХ сообщений (класс ставится в JS),
+   чтобы при каждом обновлении список не «мерцал». */
+.msg.msg-anim-in {
+  animation: msgIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
   will-change: transform, opacity;
 }
 @keyframes msgIn {
-  0% { transform: translateY(10px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+  0%   { transform: translateY(8px) scale(0.96); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 /* Соседние сообщения одного автора — плотнее, сглаженные углы */
 .msg.in + .msg.in { border-top-left-radius: 8px; }
@@ -494,6 +498,32 @@ a:hover { color: var(--accent-hover); }
   border-radius: 12px; display: block;
   cursor: pointer; margin: 4px 0;
 }
+/* Сообщение только с фото/видео — без «пузыря» (рамки, фона, теней) */
+.msg.media-only {
+  padding: 0;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: hidden;
+  border-radius: 18px;
+}
+.msg.media-only img, .msg.media-only video {
+  margin: 0;
+  border-radius: 18px;
+  max-height: 400px;
+}
+/* время поверх фото — читаемая «таблетка» */
+.msg.media-only .msg-time {
+  position: absolute; right: 8px; bottom: 8px;
+  float: none; margin: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff !important;
+  padding: 2px 8px; border-radius: 12px;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.msg.media-only .msg-checks { color: rgba(255,255,255,0.85) !important; }
+.msg.media-only .msg-checks.read { color: #8fd3ff !important; }
 .msg-day {
   align-self: center;
   background: var(--bg-tertiary);

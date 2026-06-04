@@ -656,12 +656,16 @@ function renderMessages() {
     .filter(m => m.chatId === currentChatId)
     .filter(m => !(m.scheduledFor && m.scheduledFor > Date.now() && m.senderId !== session))
     .sort((a, b) => a.timestamp - b.timestamp);
-  // отметим прочтение чужих сообщений
+  // отметим прочтение чужих сообщений (и СИНХРОНИЗИРУЕМ с сервером — для галочек ✓✓)
   let readChanged = false;
   for (const m of list) {
-    if (m.senderId !== session) {
-      m.readBy = m.readBy || [];
-      if (!m.readBy.includes(session)) { m.readBy.push(session); readChanged = true; }
+    if (m.senderId !== session && !(m.readBy || []).includes(session)) {
+      if (typeof markMessageRead === 'function') {
+        markMessageRead(m.id);   // обновляет readBy локально + шлёт на сервер → отправитель видит ✓✓
+        readChanged = true;
+      } else {
+        m.readBy = m.readBy || []; m.readBy.push(session); readChanged = true;
+      }
     }
   }
   if (readChanged) { save(DB.messages, messages); broadcast(); }
@@ -743,6 +747,11 @@ function renderMessageEl(m, chat) {
   if (m.type === 'voice') classes += ' voice';
   if (m.cmd === 'me') classes += ' cmd-me';
   if (inChannel && chat.pinnedId === m.id) classes += ' pinned-post';
+  // фото/видео без подписи — показываем без «пузыря» (рамки/фона)
+  if (((m.type === 'image' || m.type === 'album') && !m.caption) || m.type === 'video') classes += ' media-only';
+  // анимация появления — ТОЛЬКО для новых сообщений, чтобы не мерцало на каждом обновлении
+  window._animMsgSeen = window._animMsgSeen || new Set();
+  if (!window._animMsgSeen.has(m.id)) { classes += ' msg-anim-in'; window._animMsgSeen.add(m.id); }
   div.className = classes;
   div.dataset.msgId = m.id;
 
